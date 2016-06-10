@@ -100,7 +100,7 @@ public class gameHall extends JPanel{
 		Server_request_socket = new Socket(ServerInfo.hostName,ServerInfo.RequestPort);
 		Server_Brequest_socket = new Socket(ServerInfo.hostName,ServerInfo.RequestPort);
 		Game_Socket = new Socket(ServerInfo.hostName,ServerInfo.RequestPort);
-		
+		Game_Socket.setTrafficClass(0x10);
 		//Server_request_socket.setTrafficClass(0x10);
 		OutputStream out =Server_request_socket.getOutputStream();
 		InputStream in = Server_request_socket.getInputStream();
@@ -131,13 +131,12 @@ public class gameHall extends JPanel{
 					request_out.writeObject(goalPlayer);
 					request_out.flush();
 					gamerInfo quest= (gamerInfo)request_Bin.readObject();
-					if (quest.equals(goalPlayer)){
-						if (quest.Port==0)
-							JOptionPane.showConfirmDialog(null, "ÑûÇë±»¾Ü¾ø","ÑûÇë",JOptionPane.YES_OPTION);
-						else
-							getIntoPlay();
-						goalPlayer=null;
-					}
+					if (quest.Port==0)
+						JOptionPane.showConfirmDialog(null, "ÑûÇë±»¾Ü¾ø","ÑûÇë",JOptionPane.YES_OPTION);
+					else
+						getIntoPlay();
+					goalPlayer=null;
+					
 				} catch (Exception e2) {
 					e2.printStackTrace();
 					info.setText("·¢ËÍÇëÇóÊ§°Ü");
@@ -164,7 +163,7 @@ public class gameHall extends JPanel{
 								gamerInfo returnInfo = new gamerInfo();
 								returnInfo.address = owner.me.address;
 								returnInfo.Port = 0;
-								request_Bout.writeObject(returnInfo);
+								request_Bout.writeUnshared(returnInfo);
 								request_Bout.flush();
 							}
 					} catch (ClassNotFoundException e) {

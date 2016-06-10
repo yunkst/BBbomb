@@ -20,6 +20,9 @@ public class ball implements Serializable {
 		direction.x = ej.direction.x;
 		direction.y = ej.direction.y;
 	}
+	public ball(myVector location2) {
+		direction = location2.mul(1);
+	}
 	public void setDirection(int x,int y)
 	{
 		direction = new myVector(x,y).unitization();

@@ -52,7 +52,7 @@ public class action implements Serializable{
 		Transfer_Action new_pack = new Transfer_Action();
 		ball neweje = new ball();
 		neweje.direction= _sStartBound.ejector.direction;
-		neweje.location= _sStartBound.ejector.location;
+		neweje.location= _sStartBound.ejector.location.mul(1);
 		new_pack.ejector = neweje;
 		
 		for (int i =0; i<_gamemap.vailableBall.size();i++) {
@@ -81,6 +81,17 @@ public class action implements Serializable{
 			_gamemap.vailableBall.add(new ball(_sStartBound.ejector));
 		}
 	}
+	public boolean isFail(){
+		for (brick aBrick : _gamemap.vailableBricks) {
+			if (aBrick.y>deadline-gameMap.brickHeightSize)
+				return true;
+		}
+		return false;
+	}
+	public boolean isOver(){
+		return _gamemap.vailableBall.size()+restBallCount==0;
+	}
+	
 	//让时间前进一个单位
 	public void timeGo(){
 		//更新所有的球的位置

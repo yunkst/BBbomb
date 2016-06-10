@@ -78,17 +78,23 @@ public class twoPlayersManger implements gameManger{
 			public void run() {
 				//接受数据
 				try {
-					gm_out.writeUnshared(me._aAction.getPack());
+					gm_out.writeObject(me._aAction.getPack());
 					gm_out.flush();
 					another._aAction.freshByPack((Transfer_Action)gm_in.readObject()); 
 					another.paint(another.getGraphics());
-					/*
-					if (another._aAction._gamemap.vailableBall.size()+another._aAction.restBallCount==0){
-						if (another._aAction.hittedBallCount==0)
-							JOptionPane.showMessageDialog(null, "胜利");
+					
+					if (another._aAction.isOver()&&me._aAction.isOver()){
+						wait(1000);
+						if (another._aAction.isFail()&&!me._aAction.isFail())
+							JOptionPane.showMessageDialog(null, "胜利","结果",JOptionPane.OK_OPTION);
+						else if (!another._aAction.isFail()&&me._aAction.isFail())
+							JOptionPane.showMessageDialog(null, "失败","结果",JOptionPane.OK_OPTION);
+						else if (another._aAction.isFail()&&me._aAction.isFail()){
+							JOptionPane.showMessageDialog(null, "平局","结果",JOptionPane.OK_OPTION);
+						}
 						nextBrickCount = (int)(another._aAction.hittedBallCount*1.5);
-						OneTurnOver();
-					}*/
+						newTurn();
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, "掉线");
@@ -96,22 +102,20 @@ public class twoPlayersManger implements gameManger{
 					timer.cancel();
 				}
 			}
-		}, 10, 500);
+		}, 10, 10);
+	}
+	private void newTurn() {
+		me._aAction.nextBrickCount=nextBrickCount;
+		me._aAction.hittedBallCount = 0;
+		if(!me._aAction.TurnGo())
+			JOptionPane.showMessageDialog(null, "失败");
+		else
+			me.started = false;
 	}
 	@Override
 	public void OneTurnOver() {
 		
-		if(nextBrickCount>0&&(me._aAction.restBallCount+me._aAction.restBallCount==0))
-		{
-			me._aAction.nextBrickCount=nextBrickCount;
-			me._aAction.hittedBallCount = 0;
-			if(!me._aAction.TurnGo())
-				JOptionPane.showMessageDialog(null, "失败");
-			else
-				me.started = false;
-		}
-		nextBrickCount=-1;
-		//游戏结束后，发送一个结束数据，受到对方的数据之后，更新
+	//游戏结束后，发送一个结束数据，受到对方的数据之后，更新
 		/*try {
 			OutputStream stream = Connect.getOutputStream();
 			new DataOutputStream(stream).writeInt(me._aAction.hittedBallCount);

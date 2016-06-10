@@ -69,7 +69,7 @@ public class GameTable extends JPanel{
 					}	
 				}
 			}
-		}, 0, 4);
+		}, 0, 10);
 		timer2.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
