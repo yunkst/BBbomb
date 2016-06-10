@@ -19,7 +19,6 @@ public class OneGamer implements gameManger{
 		table.addMouseMotionListener(new MouseMotionListener() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				// TODO Auto-generated method stub
 				double x = e.getX()/table.widthmap;
 				double y = e.getY()/table.heightmap;
 				synchronized (table._aAction) {
