@@ -16,6 +16,18 @@ public abstract class bound implements Serializable{
 	public myVector dircetor ;
 	double length;
 	public Color color= Color.white;
+	
+	public bound(){
+		
+	}
+	
+	//获取一份绘图必要的拷贝拷贝
+	protected bound TransClone(bound sub){
+		sub.color= color;
+		sub.endpoint = sub.endpoint.clone();
+		return sub;
+	}
+	public abstract bound getTransClone();
 	public double getLength(){
 		return length;
 	}

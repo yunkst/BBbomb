@@ -16,7 +16,13 @@ public class startBound extends bound {
 		super(p1, p2);
 		_owner = owner;
 	}
-
+	public startBound() {
+		// TODO Auto-generated constructor stub
+	}
+	@Override
+	public bound getTransClone(){
+		return TransClone(new startBound()) ;
+	}
 	@Override
 	public int calculate(ball checkedBall) {
 		if (!isAvailableHit(checkedBall))

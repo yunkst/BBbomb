@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 
 import GameShower.GameTable;
 import model.myVector;
+import transferInfo.Transfer_Action;
 //两个玩家的游戏控制逻辑
 public class twoPlayersManger implements gameManger{
 	//TODO: 用一个定时器，定时发送_action数据，当发现受到的
@@ -77,10 +78,9 @@ public class twoPlayersManger implements gameManger{
 			public void run() {
 				//接受数据
 				try {
-					gm_out.writeUnshared(me._aAction);
+					gm_out.writeUnshared(me._aAction.getPack());
 					gm_out.flush();
-					action temp=(action)gm_in.readObject();
-					another._aAction=temp;
+					another._aAction.freshByPack((Transfer_Action)gm_in.readObject()); 
 					another.paint(another.getGraphics());
 					/*
 					if (another._aAction._gamemap.vailableBall.size()+another._aAction.restBallCount==0){

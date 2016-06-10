@@ -1,7 +1,10 @@
 package gameBody;
 
+import java.awt.Paint;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Vector;
+
 import model.PlusTool;
 import model.ReDirTool;
 import model.ball;
@@ -12,6 +15,7 @@ import model.myVector;
 import pbound.bound;
 import pbound.brickbound;
 import pbound.startBound;
+import transferInfo.Transfer_Action;
 
 //维护模型运行
 public class action implements Serializable{
@@ -32,6 +36,44 @@ public class action implements Serializable{
 	private int unHittedTime = 0;
 	private int lastHitted;
 	private final static int maxloopTime = 1000;//最长允许的循环次数
+	//由传送来的信息包，刷新数据
+	public void freshByPack(Transfer_Action pack){
+		_gamemap.vailableBall = pack.vailableBall;
+		_gamemap.vailableBound=pack.vailableBound;
+		_gamemap.vailableBricks = pack.vailableBricks;
+		_sStartBound.ejector.direction = pack.ejector.direction;
+		_sStartBound.ejector.location = pack.ejector.location;
+		ballCount = pack.ballCount;
+		hittedBallCount = pack.hittedBallCount;
+		restBallCount =pack.restBallCount;
+	}
+	//获取信息包
+	public Transfer_Action getPack(){
+		Transfer_Action new_pack = new Transfer_Action();
+		ball neweje = new ball();
+		neweje.direction= _sStartBound.ejector.direction;
+		neweje.location= _sStartBound.ejector.location;
+		new_pack.ejector = neweje;
+		
+		for (int i =0; i<_gamemap.vailableBall.size();i++) {
+			new_pack.vailableBall.add(new ball(_gamemap.vailableBall.get(i)));
+		}
+		for (int i =0; i<_gamemap.vailableBound.size();i++) {
+			new_pack.vailableBound.add(_gamemap.vailableBound.get(i).getTransClone());
+		}
+		for (int i =0; i<_gamemap.vailableBricks.size();i++) {
+			brick temp = new brick();
+			temp.x = _gamemap.vailableBricks.get(i).x;
+			temp.y = _gamemap.vailableBricks.get(i).y;
+			temp.live = _gamemap.vailableBricks.get(i).live;
+			temp.color = _gamemap.vailableBricks.get(i).color;
+			new_pack.vailableBricks.add(temp);
+		}
+		new_pack.ballCount = ballCount;
+		new_pack.hittedBallCount = hittedBallCount;
+		new_pack.restBallCount = restBallCount;
+		return new_pack;
+	}
 	public void launch(){
 		//如果可以发射，就发射新球
 		if (restBallCount!=0){

@@ -15,6 +15,10 @@ public class toolBound extends bound {
 		this.owner = owner;
 	}
 	public gameTool owner;
+	public toolBound() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public int calculate(ball checkedBall) {
 		if (isAvailableHit(checkedBall)){
@@ -23,5 +27,8 @@ public class toolBound extends bound {
 		}
 		return 0;
 	}
-
+	@Override
+	public bound getTransClone(){
+		return TransClone(new startBound()) ;
+	}
 }
