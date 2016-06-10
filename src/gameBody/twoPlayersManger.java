@@ -73,7 +73,7 @@ public class twoPlayersManger implements gameManger{
 	private void startSendingInfo() {
 		Timer timer= new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
-			
+			boolean ShakeHand =true;
 			@Override
 			public void run() {
 				//接受数据
@@ -82,20 +82,29 @@ public class twoPlayersManger implements gameManger{
 					gm_out.flush();
 					another._aAction.freshByPack((Transfer_Action)gm_in.readObject()); 
 					another.paint(another.getGraphics());
-					
-					if (another._aAction.isOver()&&me._aAction.isOver()){
-						wait(1000);
-						if (another._aAction.isFail()&&!me._aAction.isFail())
-							JOptionPane.showMessageDialog(null, "胜利","结果",JOptionPane.OK_OPTION);
-						else if (!another._aAction.isFail()&&me._aAction.isFail())
-							JOptionPane.showMessageDialog(null, "失败","结果",JOptionPane.OK_OPTION);
-						else if (another._aAction.isFail()&&me._aAction.isFail()){
-							JOptionPane.showMessageDialog(null, "平局","结果",JOptionPane.OK_OPTION);
+					if (another._aAction.isOver()){
+						if (me._aAction.isOver()){
+							if (another._aAction.isFail()&&!me._aAction.isFail())
+								JOptionPane.showMessageDialog(null, "胜利","结果",JOptionPane.OK_OPTION);
+							else if (!another._aAction.isFail()&&me._aAction.isFail())
+								JOptionPane.showMessageDialog(null, "失败","结果",JOptionPane.OK_OPTION);
+							else if (another._aAction.isFail()&&me._aAction.isFail()){
+								JOptionPane.showMessageDialog(null, "平局","结果",JOptionPane.OK_OPTION);
+							}else {
+								if (ShakeHand){
+									nextBrickCount = (int)(another._aAction.hittedBallCount*1.5);
+									newTurn();	
+								}	
+								ShakeHand=true;
+								return;
+							}
+							System.exit(0);
+						}else {
+							ShakeHand = false;
 						}
-						nextBrickCount = (int)(another._aAction.hittedBallCount*1.5);
-						newTurn();
 					}
-				} catch (Exception e) {
+					}
+				 catch (Exception e) {
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, "掉线");
 					System.exit(0);
@@ -111,6 +120,7 @@ public class twoPlayersManger implements gameManger{
 			JOptionPane.showMessageDialog(null, "失败");
 		else
 			me.started = false;
+		me.paint(me.getGraphics());
 	}
 	@Override
 	public void OneTurnOver() {

@@ -24,7 +24,8 @@ public abstract class bound implements Serializable{
 	//获取一份绘图必要的拷贝拷贝
 	protected bound TransClone(bound sub){
 		sub.color= color;
-		sub.endpoint = endpoint.clone();
+		sub.endpoint[0] = endpoint[0].mul(1);
+		sub.endpoint[1] = endpoint[1].mul(1);
 		return sub;
 	}
 	public abstract bound getTransClone();

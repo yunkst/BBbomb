@@ -91,6 +91,8 @@ public class GameTable extends JPanel{
 	
 	public void paint(Graphics g){
 		synchronized (_aAction) {
+			if(offScreenBuffer==null)
+				return;
 			offScreenBuffer.setColor(Color.black);
 			offScreenBuffer.fillRect(0, 0, getWidth(), getHeight());
 			_mGameMap = _aAction._gamemap;
