@@ -77,7 +77,10 @@ public class twoPlayersManger implements gameManger{
 			public void run() {
 				//接受数据
 				try {
-					another._aAction=(action)gm_in.readObject();
+					gm_out.writeObject(me._aAction);
+					gm_out.flush();
+					action temp=(action)gm_in.readObject();
+					another._aAction=temp;
 					another.paint(another.getGraphics());
 					if (another._aAction._gamemap.vailableBall.size()+another._aAction.restBallCount==0){
 						if (another._aAction.hittedBallCount==0)
@@ -91,18 +94,8 @@ public class twoPlayersManger implements gameManger{
 					System.exit(0);
 					timer.cancel();
 				}
-				//发送数据
-				try {
-					gm_out.writeObject(another._aAction);
-					another.paint(another.getGraphics());
-				} catch (Exception e) {
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "掉线");
-					System.exit(0);
-					timer.cancel();
-				}
 			}
-		}, 10, 50);
+		}, 10, 500);
 	}
 	@Override
 	public void OneTurnOver() {

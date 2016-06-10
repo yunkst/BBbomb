@@ -152,13 +152,13 @@ public class gameHall extends JPanel{
 					//TODO 修罗场问题
 					try {
 						quest = (gamerInfo)request_in.readObject();
-						
 							int res = JOptionPane.showConfirmDialog(null, "是否接受来自"+quest.toString()+"的邀请", "邀请", JOptionPane.YES_NO_OPTION);
 							if(res== JOptionPane.OK_OPTION){
 								request_Bout.writeObject(owner.me);
 								//request_out.writeObject(null);
 								request_Bout.flush();
 								getIntoPlay();
+								break;
 							}
 							else{
 								gamerInfo returnInfo = new gamerInfo();
@@ -167,11 +167,12 @@ public class gameHall extends JPanel{
 								request_Bout.writeObject(returnInfo);
 								request_Bout.flush();
 							}
-								
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
+						break;
 					} catch (IOException e) {
 						e.printStackTrace();
+						break;
 					}
 				}
 			}
@@ -184,6 +185,7 @@ public class gameHall extends JPanel{
 	{
 		info.setText("进入游戏");
 		closeDoorConnect();
+		owner.setSize(owner.getWidth()*2,owner.getHeight());
 		owner.getContentPane().add(gameForm.cN_TwoPlayer, new TwoPlayerPlane(gm_in,gm_out));
 		owner.showCard(gameForm.cN_TwoPlayer);
 	
@@ -236,8 +238,10 @@ public class gameHall extends JPanel{
 						}
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
+						break;
 					} catch (IOException e) {
 						e.printStackTrace();
+						break;
 					}
 				}
 			}

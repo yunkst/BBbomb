@@ -90,15 +90,14 @@ public class GameTable extends JPanel{
 	}
 	
 	public void paint(Graphics g){
-			synchronized (_aAction) {
+		synchronized (_aAction) {
 			offScreenBuffer.setColor(Color.black);
 			offScreenBuffer.fillRect(0, 0, getWidth(), getHeight());
+			_mGameMap = _aAction._gamemap;
 			if (_mGameMap!=null)
 				drawTable(offScreenBuffer);
 			g.drawImage(offScreenImage, 0, 0, this);	
-		
-			}
-			
+		}
 	}
 	
 	public void drawString(Graphics g, String str, int xPos, int yPos) {

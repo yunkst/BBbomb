@@ -17,7 +17,7 @@ public class TwoPlayerPlane extends JPanel {
 	public twoPlayersManger  manger;
 	public TwoPlayerPlane(ObjectInputStream gm_in,ObjectOutputStream gm_out){
 		manger = new twoPlayersManger(gm_in,gm_out);
-		setLayout(new GridLayout(2, 1));
+		setLayout(new GridLayout(1, 2));
 		add(manger.another);
 		add(manger.me);
 	}
