@@ -77,17 +77,18 @@ public class twoPlayersManger implements gameManger{
 			public void run() {
 				//接受数据
 				try {
-					gm_out.writeObject(me._aAction);
+					gm_out.writeUnshared(me._aAction);
 					gm_out.flush();
 					action temp=(action)gm_in.readObject();
 					another._aAction=temp;
 					another.paint(another.getGraphics());
+					/*
 					if (another._aAction._gamemap.vailableBall.size()+another._aAction.restBallCount==0){
 						if (another._aAction.hittedBallCount==0)
 							JOptionPane.showMessageDialog(null, "胜利");
 						nextBrickCount = (int)(another._aAction.hittedBallCount*1.5);
 						OneTurnOver();
-					}
+					}*/
 				} catch (Exception e) {
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, "掉线");
@@ -99,6 +100,7 @@ public class twoPlayersManger implements gameManger{
 	}
 	@Override
 	public void OneTurnOver() {
+		
 		if(nextBrickCount>0&&(me._aAction.restBallCount+me._aAction.restBallCount==0))
 		{
 			me._aAction.nextBrickCount=nextBrickCount;
