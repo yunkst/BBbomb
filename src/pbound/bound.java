@@ -5,7 +5,6 @@ import java.io.Serializable;
 
 import model.ball;
 import model.myVector;
-import usefulFunction.CalFunction;
 
 public abstract class bound implements Serializable{
 	/**
@@ -23,7 +22,7 @@ public abstract class bound implements Serializable{
 	//重新计算边界的方程
 	public void recal()
 	{
-		double[] equator = CalFunction.getlineEqiation(endpoint[0], endpoint[1]);
+		double[] equator = endpoint[0].getlineEqiation(endpoint[1]);
 		A = equator[0];
 		B = equator[1];
 		C = equator [2];

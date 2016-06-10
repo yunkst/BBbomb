@@ -100,6 +100,15 @@ public class myVector implements Serializable{
 		y *= sclar ;
 		return this;
 	}
+	
+	public double[] getlineEqiation(myVector p1)
+	{
+		double[] res = new double[3];
+		res[0] = y-p1.y;
+		res[1] = p1.x-x;
+		res[2] = p1.x*(p1.y - y) - p1.y*(p1.x - x);
+		return res;
+	}
 	public myVector getVertical(){
 		myVector res = new myVector();
 		if (x==0){

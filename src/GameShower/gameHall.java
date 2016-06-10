@@ -62,6 +62,11 @@ public class gameHall extends JPanel{
 	ObjectInputStream request_Bin;
 	ObjectOutputStream request_Bout;
 	
+	//游戏
+	Socket Game_Socket;
+	ObjectInputStream gm_in;
+	ObjectOutputStream gm_out;
+	
 	//控件
 	JLabel info ;
 	JButton invideButton ;
@@ -71,56 +76,14 @@ public class gameHall extends JPanel{
 	public gameHall(gameForm form){
 		this.owner = form;
 		setLayout();
-		//this.me_server = form.me_server;
-		//建立邀请接受线程线程
-		Thread listen = new Thread(new Runnable() {
-			@SuppressWarnings("unchecked")
-			public void run() {
-				while(true){
-					try {
-						/*
-						Socket connect =  me_server.accept();
-						ObjectInputStream tStream= new ObjectInputStream(connect.getInputStream());
-						//当消息来自服务器时，认为是表单，来自玩家，认为是邀请
-						//*
-						if (connect.getInetAddress().equals(InetAddress.getAllByName(ServerInfo.hostName))){
-							gamerlist.clear();
-							gamerlist.addAll((Vector<gamerInfo>)(tStream.readObject())) ;
-							info.setText("得到一份新在线表单");
-							
-						}
-						else{//*
-							gamerInfo goalPlayer = (gamerInfo)tStream.readObject();
-							int res = JOptionPane.showConfirmDialog(null, "是否接受来自"+goalPlayer.toString()+"的邀请", "邀请", JOptionPane.YES_NO_OPTION);
-							//TODO: 这里有严重问题
-							OutputStream ts= connect.getOutputStream();
-							if (res == JOptionPane.OK_OPTION)
-							{
-								ts.write(Invited_Achieve);
-								getIntoPlay(goalPlayer);
-							}
-							else
-								ts.write(Invited_Deny);
-							ts.flush();
-							ts.close();
-							//}
-						tStream.close();*/
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-			}
-		});
-		listen.start();
+		
 		//安排事件
 		BackHome.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				owner.showCard(gameForm.cN_start);
-				closeConnect();
+				closeDoorConnect();
 			}
 		});
 		
@@ -130,21 +93,28 @@ public class gameHall extends JPanel{
 		list_connectServer();
 		setRequest();
 	}
-	//设置邀请相关的初始化
+	
+	//设置初始化
 	public void setRequest() throws UnknownHostException, IOException{
 		//准备流
 		Server_request_socket = new Socket(ServerInfo.hostName,ServerInfo.RequestPort);
 		Server_Brequest_socket = new Socket(ServerInfo.hostName,ServerInfo.RequestPort);
+		Game_Socket = new Socket(ServerInfo.hostName,ServerInfo.RequestPort);
 		
 		//Server_request_socket.setTrafficClass(0x10);
 		OutputStream out =Server_request_socket.getOutputStream();
 		InputStream in = Server_request_socket.getInputStream();
 		OutputStream Bout =Server_Brequest_socket.getOutputStream();
 		InputStream Bin = Server_Brequest_socket.getInputStream();
+		OutputStream gmout =Game_Socket.getOutputStream();
+		InputStream gmin = Game_Socket.getInputStream();
+		
 		request_out = new ObjectOutputStream(out);
 		request_in = new ObjectInputStream(in);
 		request_Bout = new ObjectOutputStream(Bout);
 		request_Bin = new ObjectInputStream(Bin);
+		gm_out = new ObjectOutputStream(gmout);
+		gm_in  = new ObjectInputStream(gmin);
 		
 		//初始化
 		request_out.writeObject(owner.me);
@@ -182,14 +152,7 @@ public class gameHall extends JPanel{
 					//TODO 修罗场问题
 					try {
 						quest = (gamerInfo)request_in.readObject();
-						/*
-						if (quest.equals(goalPlayer)){
-							if (quest.Port==0)
-								JOptionPane.showConfirmDialog(null, "邀请被拒绝","邀请",JOptionPane.YES_OPTION);
-							else
-								getIntoPlay();
-							goalPlayer=null;
-						}else{/*///收到一份邀请
+						
 							int res = JOptionPane.showConfirmDialog(null, "是否接受来自"+quest.toString()+"的邀请", "邀请", JOptionPane.YES_NO_OPTION);
 							if(res== JOptionPane.OK_OPTION){
 								request_Bout.writeObject(owner.me);
@@ -202,11 +165,9 @@ public class gameHall extends JPanel{
 								returnInfo.address = owner.me.address;
 								returnInfo.Port = 0;
 								request_Bout.writeObject(returnInfo);
-								//request_out.writeObject(null);
 								request_Bout.flush();
 							}
 								
-						//}
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -222,6 +183,10 @@ public class gameHall extends JPanel{
 	private void getIntoPlay()//gamerInfo goal){
 	{
 		info.setText("进入游戏");
+		closeDoorConnect();
+		owner.getContentPane().add(gameForm.cN_TwoPlayer, new TwoPlayerPlane(gm_in,gm_out));
+		owner.showCard(gameForm.cN_TwoPlayer);
+	
 		/*
 		try {
 			Socket socket = new Socket(InetAddress.getByAddress(goal.address), goal.Port);
@@ -280,11 +245,12 @@ public class gameHall extends JPanel{
 		fleshList.start();
 	}
 
-	public void closeConnect()
+	public void closeDoorConnect()
 	{
 		getGamerInfo.cancel();
 		try {
 			Server_list_socket.close();
+			Server_Brequest_socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

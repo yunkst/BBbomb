@@ -1,6 +1,8 @@
 package GameShower;
 
 import java.awt.GridLayout;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import javax.swing.JPanel;
@@ -13,8 +15,8 @@ public class TwoPlayerPlane extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	public twoPlayersManger  manger;
-	public TwoPlayerPlane(Socket connect){
-		manger = new twoPlayersManger(connect);
+	public TwoPlayerPlane(ObjectInputStream gm_in,ObjectOutputStream gm_out){
+		manger = new twoPlayersManger(gm_in,gm_out);
 		setLayout(new GridLayout(2, 1));
 		add(manger.another);
 		add(manger.me);

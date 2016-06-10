@@ -21,16 +21,12 @@ public class twoPlayersManger implements gameManger{
 	//TODO: 用一个定时器，定时发送_action数据，当发现受到的
 	public GameTable me = new GameTable();
 	public GameTable another= new GameTable();
-	public Socket Connect;
+	ObjectInputStream gm_in;
+	ObjectOutputStream gm_out;
 	public int nextBrickCount=-1;//下一轮增加的砖块数目
-	public twoPlayersManger(Socket connect) {
-		try {
-			connect.setTrafficClass(0x10);
-		} catch (SocketException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		this.Connect = connect ;
+	public twoPlayersManger(ObjectInputStream gm_in,ObjectOutputStream gm_out) {
+		this.gm_in= gm_in;
+		this.gm_out = gm_out;
 		
 		me.manger=this;
 		me.addMouseMotionListener(new MouseMotionListener() {
@@ -81,17 +77,13 @@ public class twoPlayersManger implements gameManger{
 			public void run() {
 				//接受数据
 				try {
-					InputStream in = Connect.getInputStream();
-					if (in.available()>0){
-						ObjectInputStream tInputStream = new ObjectInputStream(in);
-						another._aAction=(action)tInputStream.readObject();
-						another.paint(another.getGraphics());
-						if (another._aAction._gamemap.vailableBall.size()+another._aAction.restBallCount==0){
-							if (another._aAction.hittedBallCount==0)
-								JOptionPane.showMessageDialog(null, "胜利");
-							nextBrickCount = (int)(another._aAction.hittedBallCount*1.5);
-							OneTurnOver();
-						}
+					another._aAction=(action)gm_in.readObject();
+					another.paint(another.getGraphics());
+					if (another._aAction._gamemap.vailableBall.size()+another._aAction.restBallCount==0){
+						if (another._aAction.hittedBallCount==0)
+							JOptionPane.showMessageDialog(null, "胜利");
+						nextBrickCount = (int)(another._aAction.hittedBallCount*1.5);
+						OneTurnOver();
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -101,9 +93,7 @@ public class twoPlayersManger implements gameManger{
 				}
 				//发送数据
 				try {
-					OutputStream out = Connect.getOutputStream();
-					ObjectOutputStream tOutputStream = new ObjectOutputStream(out);
-					tOutputStream.writeObject(another._aAction);
+					gm_out.writeObject(another._aAction);
 					another.paint(another.getGraphics());
 				} catch (Exception e) {
 					e.printStackTrace();
