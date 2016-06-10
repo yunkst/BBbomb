@@ -48,12 +48,6 @@ public class gameForm extends JFrame {
 	public GameTable opp_table;
 	
 	public gameForm(){
-		Container contentPane =  getContentPane();
-		contentPane.setLayout(new CardLayout());
-		contentPane.add(cN_start, new StartShow(this));
-		contentPane.add(cN_solo, new soloGame());
-		contentPane.add(cN_gameHall,new gameHall(this));
-		contentPane.add(cN_gamerInfo,new GamerInfoPage(this));
 		try {
 			me_server = new ServerSocket(0);
 			me.Port=me_server.getLocalPort();
@@ -61,14 +55,23 @@ public class gameForm extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		Container contentPane =  getContentPane();
+		contentPane.setLayout(new CardLayout());
+		contentPane.add(cN_start, new StartShow(this));
+		contentPane.add(cN_solo, new soloGame());
+		contentPane.add(cN_gameHall,new gameHall(this));
+		contentPane.add(cN_gamerInfo,new GamerInfoPage(this));
 		setSize(570,700);
 		setVisible(true);
 	}
 	
 	//建立服务器连接
 	public void connectServer(){
-		((gameHall)(getContentPane().getComponent(2))).connectServer();;
+		try {
+			((gameHall)(getContentPane().getComponent(2))).connectServer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		};
 	}
 	//关闭服务器连接
 	public void CloseConnect(){
