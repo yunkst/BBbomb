@@ -100,7 +100,7 @@ public class action implements Serializable{
 			ball oneball = _gamemap.vailableBall.get(i);
 			oneball.location.plusto(oneball.direction.mul(v));
 		}
-		//获取在网格中可能撞击到的边界,并计算
+		
 		for (int j = 0;j<_gamemap.vailableBall.size();j++){
 			double mindis = 0;
 			bound cloestBound;

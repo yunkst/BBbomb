@@ -83,22 +83,25 @@ public class twoPlayersManger implements gameManger{
 					another._aAction.freshByPack((Transfer_Action)gm_in.readObject()); 
 					another.paint(another.getGraphics());
 					if (another._aAction.isOver()){
+						if (another._aAction.isFail()&&!me._aAction.isFail()){
+							JOptionPane.showMessageDialog(null, "胜利","结果",JOptionPane.OK_OPTION);
+							me._aAction.iniTheMap();
+						}
+						else if (!another._aAction.isFail()&&me._aAction.isFail()){
+							JOptionPane.showMessageDialog(null, "失败","结果",JOptionPane.OK_OPTION);
+							me._aAction.iniTheMap();
+						}
+						else if (another._aAction.isFail()&&me._aAction.isFail()){
+							JOptionPane.showMessageDialog(null, "平局","结果",JOptionPane.OK_OPTION);
+							me._aAction.iniTheMap();
+						}
 						if (me._aAction.isOver()){
-							if (another._aAction.isFail()&&!me._aAction.isFail())
-								JOptionPane.showMessageDialog(null, "胜利","结果",JOptionPane.OK_OPTION);
-							else if (!another._aAction.isFail()&&me._aAction.isFail())
-								JOptionPane.showMessageDialog(null, "失败","结果",JOptionPane.OK_OPTION);
-							else if (another._aAction.isFail()&&me._aAction.isFail()){
-								JOptionPane.showMessageDialog(null, "平局","结果",JOptionPane.OK_OPTION);
-							}else {
-								if (ShakeHand){
-									nextBrickCount = (int)(another._aAction.hittedBallCount*1.5);
-									newTurn();	
-								}	
-								ShakeHand=true;
-								return;
-							}
-							System.exit(0);
+							if (ShakeHand){
+								nextBrickCount = (int)(another._aAction.hittedBallCount*1.5);
+								newTurn();	
+							}	
+							ShakeHand=true;
+							return;
 						}else {
 							ShakeHand = false;
 						}
@@ -116,10 +119,8 @@ public class twoPlayersManger implements gameManger{
 	private void newTurn() {
 		me._aAction.nextBrickCount=nextBrickCount;
 		me._aAction.hittedBallCount = 0;
-		if(!me._aAction.TurnGo())
-			JOptionPane.showMessageDialog(null, "失败");
-		else
-			me.started = false;
+		me._aAction.TurnGo();
+		me.started = false;
 		me.paint(me.getGraphics());
 	}
 	@Override

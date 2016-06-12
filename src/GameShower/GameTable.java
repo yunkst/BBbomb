@@ -69,7 +69,7 @@ public class GameTable extends JPanel{
 					}	
 				}
 			}
-		}, 0, 10);
+		}, 0, 5);
 		timer2.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
@@ -166,7 +166,7 @@ public class GameTable extends JPanel{
 		return (int)(w*widthmap);
 	}
 	//计算映射后的x坐标
-		private int gety(double y){
-			return (int)(y*heightmap);
-		}
+	private int gety(double y){
+		return (int)(y*heightmap);
+	}
 }

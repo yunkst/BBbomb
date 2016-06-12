@@ -3,6 +3,8 @@ package pbound;
 import java.awt.Color;
 import java.io.Serializable;
 
+import org.omg.CORBA.MARSHAL;
+
 import model.ball;
 import model.myVector;
 
@@ -60,14 +62,12 @@ public abstract class bound implements Serializable{
 		double e1_dis =endpoint[0].pow_Distance(Point); 
 		double e2_dis =endpoint[1].pow_Distance(Point); 
 		//2.观察是否有有效撞击
-		double inlinemod = Math.sqrt(e1_dis-distance*distance)+Math.sqrt(e2_dis-distance*distance);
-		if(inlinemod<=length)//常规撞击
+		double inlinemod = Math.sqrt(Math.abs(e1_dis-distance*distance))+Math.sqrt(Math.abs(e2_dis-distance*distance) );
+		if(inlinemod<=length+0.001)//常规撞击
 			return distance;
 		else
 		{
-			e1_dis = Math.sqrt(e1_dis);
-			e2_dis = Math.sqrt(e2_dis);
-			return Math.min(e1_dis, e2_dis);
+			return Math.sqrt(Math.min(e1_dis, e2_dis));
 		}
 	}
 	public boolean isAvailableHit(ball checkedBall){
@@ -87,7 +87,7 @@ public abstract class bound implements Serializable{
 		double e2_dis =endpoint[1].pow_Distance(ballLocation); 
 		//2.观察是否有有效撞击
 		double inlinemod = Math.sqrt(e1_dis-distance*distance)+Math.sqrt(e2_dis-distance*distance);
-		if(inlinemod<=length)//常规撞击
+		if(inlinemod<=length+0.001)//常规撞击
 			planeVerDirecror = dircetor.getVertical();
 		else{
 			myVector effortPoint =null;//撞击点
